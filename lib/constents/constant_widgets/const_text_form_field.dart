@@ -13,9 +13,10 @@ class ConstTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: const InputDecoration(
-        hintText: 'Name',
-        border: OutlineInputBorder(
+      controller: controller,
+      decoration: InputDecoration(
+        hintText: hint,
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
           ),

@@ -53,7 +53,9 @@ class ScreenSignUp extends StatelessWidget {
               height: 40,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await signUpScrnProvider.signUp(context);
+                },
                 child: const Text('Sign Up'),
               ),
             ),
