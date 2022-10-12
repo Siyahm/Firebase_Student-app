@@ -1,6 +1,6 @@
 import 'package:firebase_student_app/constents/constant_widgets/const_text_form_field.dart';
 import 'package:firebase_student_app/constents/constents.dart';
-import 'package:firebase_student_app/screen/sign_in/controller/sign_in_screen_controller.dart';
+import 'package:firebase_student_app/screen/signUp/controller/sign_up_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,8 +9,8 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final signInProvider =
-        Provider.of<SignInScreenProvider>(context, listen: false);
+    final signUpProvider =
+        Provider.of<SignUpScreenProvider>(context, listen: false);
 
     return Scaffold(
       body: Padding(
@@ -25,12 +25,12 @@ class SignInPage extends StatelessWidget {
             ),
             kSizedBox50,
             ConstTextFormField(
-              controller: signInProvider.emailController,
+              controller: signUpProvider.emailController,
               hint: 'Email',
             ),
             kSizedBox10,
             ConstTextFormField(
-              controller: signInProvider.passwordController,
+              controller: signUpProvider.passwordController,
               hint: 'Password',
             ),
             kSizedBox20,
@@ -38,7 +38,9 @@ class SignInPage extends StatelessWidget {
               height: 40,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await signUpProvider.signIn(context);
+                },
                 child: const Text('Login'),
               ),
             ),
@@ -65,7 +67,7 @@ class SignInPage extends StatelessWidget {
                     minimumSize: const Size(50, 25),
                   ),
                   onPressed: () =>
-                      signInProvider.signUpButtonOnPressed(context),
+                      signUpProvider.signUpTextButtonOnPressed(context),
                   child: const Text(
                     'Sign Up',
                     style: TextStyle(

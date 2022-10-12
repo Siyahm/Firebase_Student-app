@@ -1,10 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
 import 'package:firebase_student_app/screen/home/controller/home_screen_provider.dart';
-import 'package:firebase_student_app/screen/sign_in/controller/sign_in_screen_controller.dart';
-
 import 'package:firebase_student_app/screen/signUp/controller/sign_up_controller.dart';
-import 'package:firebase_student_app/screen/sign_in/view/sign_in_screen.dart';
+import 'package:firebase_student_app/screen/splash/controller/splash_controller.dart';
+import 'package:firebase_student_app/screen/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +20,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => SignInScreenProvider(),
-        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => SignInScreenProvider(),
+        // ),
         ChangeNotifierProvider(
           create: (context) => SignUpScreenProvider(),
         ),
@@ -33,6 +32,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AddScreenProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => SplashScreenProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const SignInPage(),
+        home: const SplashScreen(),
       ),
     );
   }

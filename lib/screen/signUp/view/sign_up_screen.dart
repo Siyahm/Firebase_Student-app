@@ -16,7 +16,10 @@ class ScreenSignUp extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => signUpScrnProvider.popFunction(context),
+          onPressed: () {
+            signUpScrnProvider.popFunction(context);
+            signUpScrnProvider.clearControllers();
+          },
           icon: const Icon(
             Icons.arrow_back_ios,
             color: kBlack,
