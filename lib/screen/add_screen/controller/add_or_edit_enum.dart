@@ -1,0 +1,4 @@
+enum ScreenAction {
+  add,
+  edit,
+}

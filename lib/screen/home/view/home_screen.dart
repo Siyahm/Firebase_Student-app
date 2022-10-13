@@ -1,5 +1,7 @@
 import 'package:firebase_student_app/constents/constents.dart';
+import 'package:firebase_student_app/screen/add_screen/controller/add_or_edit_enum.dart';
 import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
+import 'package:firebase_student_app/screen/add_screen/model/sutdents_model.dart';
 import 'package:firebase_student_app/screen/home/controller/home_screen_provider.dart';
 import 'package:firebase_student_app/screen/home/view/widget/custom_drawer.dart';
 import 'package:firebase_student_app/screen/home/view/widget/students_tile.dart';
@@ -7,14 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
+  HomeScreen({
+    super.key,
+  });
+  StudentModel? model;
   @override
   Widget build(BuildContext context) {
     final homeScrnProvider =
         Provider.of<HomeScreenProvider>(context, listen: false);
+    final addScrnProvider = Provider.of<AddScreenProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       homeScrnProvider.getUser(context);
+      // addScrnProvider.getStudentList();
     });
     return Scaffold(
       key: homeScrnProvider.scaffoldKey,
@@ -35,7 +41,12 @@ class HomeScreen extends StatelessWidget {
               color: kBlack,
             ),
             onPressed: () {
-              homeScrnProvider.onTapfunction(context, ScreenAction.add);
+              addScrnProvider.clearControllers();
+              homeScrnProvider.onTapfunction(
+                context,
+                ScreenAction.add,
+                model,
+              );
             },
           ),
           kSizedBoxWidth10,
@@ -48,12 +59,14 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       endDrawer: const CustomDrawer(),
-      body: ListView.separated(
-          itemBuilder: (context, index) => StudentTile(
-                index: index,
-              ),
-          separatorBuilder: (context, index) => const Divider(),
-          itemCount: 10),
+      body: Consumer<AddScreenProvider>(
+        builder: (context, value, child) => ListView.separated(
+            itemBuilder: (context, index) => StudentTile(
+                  index: index,
+                ),
+            separatorBuilder: (context, index) => const Divider(),
+            itemCount: value.studentList.length),
+      ),
     );
   }
 }

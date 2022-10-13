@@ -1,21 +1,28 @@
 import 'package:firebase_student_app/constents/constents.dart';
+import 'package:firebase_student_app/screen/add_screen/controller/add_or_edit_enum.dart';
 import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
 import 'package:firebase_student_app/constents/constant_widgets/const_text_form_field.dart';
+import 'package:firebase_student_app/screen/add_screen/model/sutdents_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AddScreen extends StatelessWidget {
-  const AddScreen({
+  AddScreen({
     super.key,
     required this.screenAction,
+    this.model,
   });
 
   final ScreenAction screenAction;
+  StudentModel? model;
 
   @override
   Widget build(BuildContext context) {
     final addScrnProvider =
         Provider.of<AddScreenProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      addScrnProvider.fillEditScreen(model, screenAction);
+    });
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

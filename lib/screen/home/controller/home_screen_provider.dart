@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
+import 'package:firebase_student_app/screen/add_screen/controller/add_or_edit_enum.dart';
+import 'package:firebase_student_app/screen/add_screen/model/sutdents_model.dart';
+import 'package:firebase_student_app/screen/add_screen/services/student_database_manage.dart';
 import 'package:firebase_student_app/screen/add_screen/view/add_screen.dart';
-import 'package:firebase_student_app/screen/home/view/widget/custom_drawer.dart';
 import 'package:firebase_student_app/screen/signUp/model/user_model.dart';
 import 'package:firebase_student_app/screen/signUp/services/user_database_manage.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +24,18 @@ class HomeScreenProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onTapfunction(context, ScreenAction screenAction) {
+  void onTapfunction(context, ScreenAction screenAction, StudentModel? model) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => AddScreen(
           screenAction: screenAction,
+          model: model,
         ),
       ),
     );
+    // StudentDatabaseManage().getStudentData(
+    //   auth,
+    // );
   }
 
   UserModel? userModel;

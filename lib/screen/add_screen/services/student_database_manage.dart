@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_student_app/constents/constant_widgets/show_snack_bar.dart';
 import 'package:firebase_student_app/screen/add_screen/model/sutdents_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class StudentDatabaseManage {
@@ -35,5 +36,28 @@ class StudentDatabaseManage {
     } catch (e) {
       showSnackBarWidget(context, e.toString(), Colors.red);
     }
+  }
+
+  Future<List<StudentModel>> getStudentData(
+    FirebaseAuth auth,
+  ) async {
+    List<StudentModel> studentList = [];
+    User user = auth.currentUser!;
+    await firebaseFirestore
+        .collection("Users")
+        .doc(user.uid)
+        .collection("Students")
+        .get()
+        .then((value) {
+      for (var student in value.docs) {
+        studentList.add(
+          StudentModel.studentDataformMap(
+            student.data(),
+          ),
+        );
+      }
+    });
+    log(studentList.toString());
+    return studentList;
   }
 }

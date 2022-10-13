@@ -26,7 +26,7 @@ class FirebaseAuthMethods {
           .then((value) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (ctx) => const HomeScreen(),
+            builder: (ctx) => HomeScreen(),
           ),
         );
       });
