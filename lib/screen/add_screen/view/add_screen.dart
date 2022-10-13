@@ -72,7 +72,9 @@ class AddScreen extends StatelessWidget {
                 height: 40,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await addScrnProvider.addStudentToFirestore(context);
+                  },
                   child: const Text('Save'),
                 ),
               ),

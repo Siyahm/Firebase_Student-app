@@ -20,4 +20,14 @@ class UserModel {
       'password': password,
     };
   }
+
+  //User data from server
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      uid: map['uid'],
+      name: map['name'],
+      email: map['email'],
+      password: map['password'],
+    );
+  }
 }

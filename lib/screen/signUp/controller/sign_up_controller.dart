@@ -56,6 +56,7 @@ class SignUpScreenProvider with ChangeNotifier {
   Future<void> signIn(context) async {
     await FirebaseAuthMethods()
         .signIn(context, emailController.text, passwordController.text, auth);
+    clearControllers();
   }
 
   // void afterSignIn(context) {

@@ -13,7 +13,7 @@ class FirebaseAuthMethods {
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
     } on FirebaseException catch (e) {
-      showSnackBarWidget(context, e.message!);
+      showSnackBarWidget(context, e.message!, Colors.red);
     }
   }
 
@@ -31,7 +31,7 @@ class FirebaseAuthMethods {
         );
       });
     } on FirebaseAuthException catch (e) {
-      showSnackBarWidget(context, e.message!);
+      showSnackBarWidget(context, e.message!, Colors.red);
     } catch (e) {
       log(e.toString());
     }
@@ -42,7 +42,7 @@ class FirebaseAuthMethods {
     try {
       await auth.signOut();
     } on FirebaseException catch (e) {
-      showSnackBarWidget(context, e.message!);
+      showSnackBarWidget(context, e.message!, Colors.red);
     }
   }
 }

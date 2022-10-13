@@ -13,6 +13,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeScrnProvider =
         Provider.of<HomeScreenProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      homeScrnProvider.getUser(context);
+    });
     return Scaffold(
       key: homeScrnProvider.scaffoldKey,
       appBar: AppBar(
