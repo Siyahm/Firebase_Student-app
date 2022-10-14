@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 class StudentDatabaseManage {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final studentId = DateTime.now().millisecondsSinceEpoch.toString();
+  List<StudentModel> studentList = [];
   Future<void> createStudentCollection(
     String name,
     String std,
@@ -41,7 +42,6 @@ class StudentDatabaseManage {
   Future<List<StudentModel>> getStudentData(
     FirebaseAuth auth,
   ) async {
-    List<StudentModel> studentList = [];
     User user = auth.currentUser!;
     await firebaseFirestore
         .collection("Users")
@@ -59,5 +59,46 @@ class StudentDatabaseManage {
     });
     log(studentList.toString());
     return studentList;
+  }
+
+  Future<void> updateStudentCollection(
+    String name,
+    String std,
+    String age,
+    String domain,
+    FirebaseAuth auth,
+    BuildContext context,
+    String studentId,
+  ) async {
+    try {
+      User user = auth.currentUser!;
+      StudentModel studentModel = StudentModel(
+        name: name,
+        std: std,
+        age: age,
+        domain: domain,
+        studentId: studentId,
+      );
+
+      await firebaseFirestore
+          .collection('Users')
+          .doc(user.uid)
+          .collection('Students')
+          .doc(studentId)
+          .update(studentModel.studentDataToMap());
+    } catch (e) {
+      showSnackBarWidget(context, e.toString(), Colors.red);
+    }
+  }
+
+  Future<void> deleteStudent(FirebaseAuth auth, String id) async {
+    User user = auth.currentUser!;
+    await firebaseFirestore
+        .collection("Users")
+        .doc(user.uid)
+        .collection("Students")
+        .doc(id)
+        .delete();
+    // log(studentList[index].studentId!);
   }
 }

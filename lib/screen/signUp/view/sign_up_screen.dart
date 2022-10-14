@@ -38,16 +38,25 @@ class ScreenSignUp extends StatelessWidget {
             ),
             kSizedBox50,
             ConstTextFormField(
+              validation: (String? value) {
+                return null;
+              },
               hint: 'Name',
               controller: signUpScrnProvider.nameController,
             ),
             kSizedBox10,
             ConstTextFormField(
+              validation: (String? value) {
+                return null;
+              },
               hint: 'Email',
               controller: signUpScrnProvider.emailController,
             ),
             kSizedBox10,
             ConstTextFormField(
+              validation: (String? value) {
+                return null;
+              },
               hint: 'Password',
               controller: signUpScrnProvider.passwordController,
             ),

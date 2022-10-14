@@ -13,6 +13,7 @@ class AddScreenProvider with ChangeNotifier {
   final TextEditingController domainController = TextEditingController();
   FirebaseAuth auth = FirebaseAuth.instance;
   List<StudentModel> studentList = [];
+  final formKey = GlobalKey<FormState>();
 
   void popFunction(context) {
     Navigator.pop(context);
@@ -42,6 +43,7 @@ class AddScreenProvider with ChangeNotifier {
               'Student has been added successfully',
               const Color.fromARGB(255, 0, 147, 5),
             ));
+    getStudentList();
     notifyListeners();
   }
 
@@ -65,5 +67,49 @@ class AddScreenProvider with ChangeNotifier {
       domainController.text = model.domain!;
     }
     notifyListeners();
+  }
+
+  Future<void> updateStudentToFirestore(
+      BuildContext context, String studentId) async {
+    await StudentDatabaseManage()
+        .updateStudentCollection(
+          nameController.text,
+          classController.text,
+          ageController.text,
+          domainController.text,
+          auth,
+          context,
+          studentId,
+        )
+        .then((value) => clearControllers())
+        .then((value) => showSnackBarWidget(
+              context,
+              'Student has been updated successfully',
+              const Color.fromARGB(255, 0, 147, 5),
+            ));
+    getStudentList();
+    notifyListeners();
+  }
+
+  void deleteStudent(String id) {
+    StudentDatabaseManage().deleteStudent(auth, id);
+    getStudentList();
+    notifyListeners();
+  }
+
+  nameClassDomainValidation(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter name';
+    }
+    return '';
+  }
+
+  ageValidation(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter name';
+    } else if (value.length > 2) {
+      return 'Please enter a valid age';
+    }
+    return '';
   }
 }

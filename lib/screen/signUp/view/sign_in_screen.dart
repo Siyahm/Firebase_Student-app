@@ -25,11 +25,17 @@ class SignInPage extends StatelessWidget {
             ),
             kSizedBox50,
             ConstTextFormField(
+              validation: (String? value) {
+                return null;
+              },
               controller: signUpProvider.emailController,
               hint: 'Email',
             ),
             kSizedBox10,
             ConstTextFormField(
+              validation: (String? value) {
+                return null;
+              },
               controller: signUpProvider.passwordController,
               hint: 'Password',
             ),

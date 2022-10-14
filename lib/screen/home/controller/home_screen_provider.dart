@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 class HomeScreenProvider with ChangeNotifier {
   final visibilityList = List.generate(10, (index) => false);
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isLoading = false;
 
   UserDatabaseManage userDatabaseManage = UserDatabaseManage();
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -39,8 +40,11 @@ class HomeScreenProvider with ChangeNotifier {
   }
 
   UserModel? userModel;
-  Future<void> getUser(context) async {
+  void getUser(context) async {
+    isLoading = true;
+    notifyListeners();
     userModel = await userDatabaseManage.getUserData(context, auth);
+    isLoading = false;
     notifyListeners();
   }
 }

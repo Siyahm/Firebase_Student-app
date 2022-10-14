@@ -1,3 +1,4 @@
+import 'package:firebase_student_app/constents/constant_widgets/confirmation_popup.dart';
 import 'package:firebase_student_app/constents/constents.dart';
 import 'package:firebase_student_app/screen/home/controller/home_screen_provider.dart';
 import 'package:firebase_student_app/screen/signUp/controller/sign_up_controller.dart';
@@ -25,9 +26,13 @@ class CustomDrawer extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: IconButton(
-                    onPressed: () {
-                      signUpScrnProvider.signOut(context);
-                    },
+                    onPressed: () => confirmationPopUp(
+                      context,
+                      'Do you want to log out ?',
+                      () {
+                        signUpScrnProvider.signOut(context);
+                      },
+                    ),
                     icon: const Icon(Icons.logout),
                   ),
                 ),
@@ -40,8 +45,18 @@ class CustomDrawer extends StatelessWidget {
                   ),
                 ),
                 kSizedBox10,
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 60,
+                  child: Text(
+                    context
+                        .read<HomeScreenProvider>()
+                        .userModel!
+                        .name![0]
+                        .toString()
+                        .toUpperCase(),
+                    style: const TextStyle(
+                        fontSize: 50, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 kSizedBox50,
                 Text(
