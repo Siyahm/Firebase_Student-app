@@ -3,6 +3,7 @@ import 'package:firebase_student_app/screen/add_screen/controller/add_or_edit_en
 import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
 import 'package:firebase_student_app/constents/constant_widgets/const_text_form_field.dart';
 import 'package:firebase_student_app/screen/add_screen/model/sutdents_model.dart';
+import 'package:firebase_student_app/screen/home/controller/home_screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,8 +21,14 @@ class AddScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final addScrnProvider =
         Provider.of<AddScreenProvider>(context, listen: false);
+    final homeScreenProvider = Provider.of<HomeScreenProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      addScrnProvider.fillEditScreen(model, screenAction);
+      if (screenAction == ScreenAction.edit) {
+        addScrnProvider.fillEditScreen(model, screenAction);
+      }
+      // else {
+      //   addScrnProvider.clearControllers();
+      // }
     });
     return Scaffold(
       appBar: AppBar(
@@ -41,9 +48,9 @@ class AddScreen extends StatelessWidget {
         padding: const EdgeInsets.all(30.0),
         child: SingleChildScrollView(
           child: Form(
-            key: Provider.of<AddScreenProvider>(context, listen: false).formKey,
+            key: addScrnProvider.formKey,
             child: Consumer<AddScreenProvider>(
-              builder: (BuildContext context, value, Widget? _) {
+              builder: (BuildContext ctx, value, Widget? _) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,8 +62,49 @@ class AddScreen extends StatelessWidget {
                       style: const TextStyle(color: kBlack, fontSize: 22),
                     ),
                     kSizedBox30,
-                    const CircleAvatar(
+                    CircleAvatar(
+                      backgroundImage: screenAction == ScreenAction.edit
+                          ? addScrnProvider.passedImage != ""
+                              ? NetworkImage(addScrnProvider.passedImage)
+                              : null
+                          : null,
                       radius: 70,
+                      child: addScrnProvider.studentImage == null
+                          ? GestureDetector(
+                              onTap: () {
+                                addScrnProvider.pickStudentImage(context);
+                              },
+                              child: screenAction == ScreenAction.add
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.camera_alt),
+                                        Text('Add Image')
+                                      ],
+                                    )
+                                  : Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          addScrnProvider
+                                              .pickStudentImage(context);
+                                        },
+                                        child: const Text(
+                                          'Change\nimage',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                            )
+                          : CircleAvatar(
+                              radius: 70,
+                              backgroundImage:
+                                  FileImage(addScrnProvider.studentImage!),
+                            ),
                     ),
                     kSizedBox10,
                     ConstTextFormField(
@@ -64,7 +112,8 @@ class AddScreen extends StatelessWidget {
                         // if (values == null || values.isEmpty) {
                         //   return 'Please enter name';
                         // }
-                        return value.nameClassDomainValidation(values);
+                        return value.nameClassDomainValidation(
+                            values, 'Please enter name');
                         // return null;
                       },
                       controller: value.nameController,
@@ -75,7 +124,8 @@ class AddScreen extends StatelessWidget {
                       controller: value.classController,
                       hint: 'class',
                       validation: (String? values) {
-                        return value.nameClassDomainValidation(values);
+                        return value.nameClassDomainValidation(
+                            values, 'Please enter class');
                       },
                     ),
                     kSizedBox10,
@@ -89,7 +139,8 @@ class AddScreen extends StatelessWidget {
                     kSizedBox10,
                     ConstTextFormField(
                       validation: (String? values) {
-                        return value.nameClassDomainValidation(values);
+                        return value.nameClassDomainValidation(
+                            values, 'Please enter domain name');
                       },
                       controller: value.domainController,
                       hint: 'Domain',
@@ -99,13 +150,9 @@ class AddScreen extends StatelessWidget {
                       height: 40,
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          if (value.formKey.currentState!.validate()) {
-                            screenAction == ScreenAction.add
-                                ? await value.addStudentToFirestore(context)
-                                : await value.updateStudentToFirestore(
-                                    context, model!.studentId!);
-                          }
+                        onPressed: () {
+                          value.onClickSaveButton(screenAction, context, model);
+                          homeScreenProvider.getStudentList();
                         },
                         child: const Text('Save'),
                       ),

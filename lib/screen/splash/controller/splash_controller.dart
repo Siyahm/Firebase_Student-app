@@ -9,7 +9,7 @@ class SplashScreenProvider with ChangeNotifier {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const SignInPage(),
+          builder: (context) => SignInPage(),
         ),
       );
     } else {

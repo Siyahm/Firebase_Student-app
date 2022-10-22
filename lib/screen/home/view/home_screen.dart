@@ -1,9 +1,6 @@
-import 'dart:developer';
-
 import 'package:firebase_student_app/constents/constents.dart';
 import 'package:firebase_student_app/screen/add_screen/controller/add_or_edit_enum.dart';
 import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
-import 'package:firebase_student_app/screen/add_screen/model/sutdents_model.dart';
 import 'package:firebase_student_app/screen/home/controller/home_screen_provider.dart';
 import 'package:firebase_student_app/screen/home/view/widget/custom_drawer.dart';
 import 'package:firebase_student_app/screen/home/view/widget/students_tile.dart';
@@ -11,23 +8,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({
+  const HomeScreen({
     super.key,
   });
-  StudentModel? model;
+
   @override
   Widget build(BuildContext context) {
     final homeScrnProvider =
         Provider.of<HomeScreenProvider>(context, listen: false);
-    final addScrnProvider =
-        Provider.of<AddScreenProvider>(context, listen: false);
+    // final addScrnProvider =
+    //     Provider.of<AddScreenProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       homeScrnProvider.getUser(context);
-      // addScrnProvider.getStudentList();
+      homeScrnProvider.getStudentList();
     });
-    log("jj");
+    final scaffoldKey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key: homeScrnProvider.scaffoldKey,
+      key: scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
@@ -39,49 +36,71 @@ class HomeScreen extends StatelessWidget {
         ),
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.add,
-              color: kBlack,
-            ),
-            onPressed: () {
-              addScrnProvider.clearControllers();
-              homeScrnProvider.onTapfunction(
-                context,
-                ScreenAction.add,
-                model,
-              );
-            },
-          ),
           kSizedBoxWidth10,
           GestureDetector(
-            onTap: () =>
-                homeScrnProvider.scaffoldKey.currentState!.openEndDrawer(),
+            onTap: () => scaffoldKey.currentState!.openEndDrawer(),
             child: Consumer<HomeScreenProvider>(
                 builder: (BuildContext context, value, Widget? child) {
-              return CircleAvatar(
-                child: value.isLoading == true
-                    ? const CircularProgressIndicator()
-                    : Text(
-                        value.userModel?.name?[0].toString().toUpperCase() ??
-                            "",
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-              );
+              return value.isLoading == true
+                  ? const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 20,
+                      child: CircularProgressIndicator())
+                  : value.downloadUrl != null
+                      ? CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: NetworkImage(value.downloadUrl!),
+                        )
+                      : CircleAvatar(
+                          child: Text(
+                            value.userModel?.name?[0]
+                                    .toString()
+                                    .toUpperCase() ??
+                                "",
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        );
             }),
           ),
           kSizedBoxWidth10,
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          homeScrnProvider.onTapAddButtonfunction(
+            context,
+            ScreenAction.add,
+            homeScrnProvider.model,
+          );
+          Provider.of<AddScreenProvider>(context, listen: false)
+              .clearControllers();
+        },
+        child: const Icon(Icons.add),
+      ),
       endDrawer: const CustomDrawer(),
-      body: Consumer<AddScreenProvider>(
-        builder: (context, value, child) => ListView.separated(
-            itemBuilder: (context, index) => StudentTile(
-                  index: index,
-                ),
-            separatorBuilder: (context, index) => const Divider(),
-            itemCount: value.studentList.length),
+      body: Consumer<HomeScreenProvider>(
+        builder: (context, value, child) {
+          if (value.isLoading == true) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (value.studentList.isEmpty) {
+            return const Center(
+              child: Text('No students added'),
+            );
+          }
+          return ListView.separated(
+              itemBuilder: (context, index) => StudentTile(
+                    index: index,
+                    studentList: value.studentList,
+                  ),
+              separatorBuilder: (context, index) => const Divider(
+                    height: 5,
+                  ),
+              itemCount: value.studentList.length);
+        },
       ),
     );
   }

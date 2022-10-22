@@ -4,6 +4,7 @@ class StudentModel {
   String? age;
   String? domain;
   String? studentId;
+  String? image;
 
   StudentModel({
     required this.name,
@@ -11,6 +12,7 @@ class StudentModel {
     required this.age,
     required this.domain,
     required this.studentId,
+    required this.image,
   });
 
   Map<String, dynamic> studentDataToMap() {
@@ -20,6 +22,7 @@ class StudentModel {
       'age': age,
       'domain': domain,
       'studentId': studentId,
+      "image": image,
     };
   }
 
@@ -30,6 +33,7 @@ class StudentModel {
       age: map['age'],
       domain: map['domain'],
       studentId: map['studentId'],
+      image: map["image"],
     );
   }
 }

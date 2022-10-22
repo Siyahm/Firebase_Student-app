@@ -8,15 +8,16 @@ import 'package:flutter/material.dart';
 
 class StudentDatabaseManage {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  final studentId = DateTime.now().millisecondsSinceEpoch.toString();
   List<StudentModel> studentList = [];
   Future<void> createStudentCollection(
     String name,
     String std,
     String age,
     String domain,
+    String image,
     FirebaseAuth auth,
     BuildContext context,
+    String id,
   ) async {
     try {
       User user = auth.currentUser!;
@@ -25,14 +26,15 @@ class StudentDatabaseManage {
         std: std,
         age: age,
         domain: domain,
-        studentId: studentId,
+        image: image,
+        studentId: id,
       );
 
       await firebaseFirestore
           .collection('Users')
           .doc(user.uid)
           .collection('Students')
-          .doc(studentId)
+          .doc(id)
           .set(studentModel.studentDataToMap());
     } catch (e) {
       showSnackBarWidget(context, e.toString(), Colors.red);
@@ -42,22 +44,27 @@ class StudentDatabaseManage {
   Future<List<StudentModel>> getStudentData(
     FirebaseAuth auth,
   ) async {
-    User user = auth.currentUser!;
-    await firebaseFirestore
-        .collection("Users")
-        .doc(user.uid)
-        .collection("Students")
-        .get()
-        .then((value) {
-      for (var student in value.docs) {
-        studentList.add(
-          StudentModel.studentDataformMap(
-            student.data(),
-          ),
-        );
-      }
-    });
-    log(studentList.toString());
+    try {
+      User user = auth.currentUser!;
+      await firebaseFirestore
+          .collection("Users")
+          .doc(user.uid)
+          .collection("Students")
+          .get()
+          .then((value) {
+        for (var student in value.docs) {
+          studentList.add(
+            StudentModel.studentDataformMap(
+              student.data(),
+            ),
+          );
+        }
+      });
+      log(studentList.toString());
+      return studentList;
+    } catch (e) {
+      log(e.toString());
+    }
     return studentList;
   }
 
@@ -66,6 +73,7 @@ class StudentDatabaseManage {
     String std,
     String age,
     String domain,
+    String? image,
     FirebaseAuth auth,
     BuildContext context,
     String studentId,
@@ -77,6 +85,7 @@ class StudentDatabaseManage {
         std: std,
         age: age,
         domain: domain,
+        image: image,
         studentId: studentId,
       );
 

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_student_app/screen/add_screen/controller/add_screen_provider.dart';
 import 'package:firebase_student_app/screen/home/controller/home_screen_provider.dart';
+import 'package:firebase_student_app/screen/password_reset_screen/controller/password_reset_provider.dart';
 import 'package:firebase_student_app/screen/signUp/controller/sign_up_controller.dart';
 import 'package:firebase_student_app/screen/splash/controller/splash_controller.dart';
 import 'package:firebase_student_app/screen/splash/view/splash_screen.dart';
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => SplashScreenProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PasswordResetProvider(),
         ),
       ],
       child: MaterialApp(

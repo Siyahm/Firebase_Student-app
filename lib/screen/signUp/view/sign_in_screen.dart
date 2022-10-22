@@ -5,86 +5,98 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+   SignInPage({super.key});
+
+  final signInFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final signUpProvider =
+    final signInProvider =
         Provider.of<SignUpScreenProvider>(context, listen: false);
 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(30.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              'Sign in',
-              style: TextStyle(color: kBlack, fontSize: 22),
-            ),
-            kSizedBox50,
-            ConstTextFormField(
-              validation: (String? value) {
-                return null;
-              },
-              controller: signUpProvider.emailController,
-              hint: 'Email',
-            ),
-            kSizedBox10,
-            ConstTextFormField(
-              validation: (String? value) {
-                return null;
-              },
-              controller: signUpProvider.passwordController,
-              hint: 'Password',
-            ),
-            kSizedBox20,
-            SizedBox(
-              height: 40,
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await signUpProvider.signIn(context);
+        child: Form(
+          key: signInFormKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Sign in',
+                style: TextStyle(color: kBlack, fontSize: 22),
+              ),
+              kSizedBox50,
+              ConstTextFormField(
+                validation: (String? value) {
+                  return signInProvider.emailValidation(value);
                 },
-                child: const Text('Login'),
+                controller: signInProvider.emailController,
+                hint: 'Email',
               ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.all(0),
-                  minimumSize: const Size(50, 30),
-                ),
-                child: const Text('Forgot Password'),
+              kSizedBox10,
+              ConstTextFormField(
+                validation: (String? value) {
+                  return signInProvider.nameClassDomainValidation(
+                      value, 'Please enter password');
+                },
+                controller: signInProvider.passwordController,
+                hint: 'Password',
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Text('Not registerd yet? '),
-                TextButton(
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    signInProvider.onClickForgottButton(context);
+                  },
                   style: TextButton.styleFrom(
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     padding: const EdgeInsets.all(0),
-                    minimumSize: const Size(50, 25),
+                    minimumSize: const Size(50, 30),
                   ),
-                  onPressed: () =>
-                      signUpProvider.signUpTextButtonOnPressed(context),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      color: kBlue,
-                      fontSize: 16,
+                  child: const Text('Forgot Password'),
+                ),
+              ),
+              kSizedBox20,
+              SizedBox(
+                height: 40,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (signInFormKey.currentState!.validate()) {
+                      await signInProvider.signIn(context);
+                    }
+                  },
+                  child: const Text('Login'),
+                ),
+              ),
+              kSizedBox50,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Not registerd yet? '),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.all(0),
+                      minimumSize: const Size(50, 25),
+                    ),
+                    onPressed: () {
+                      signInProvider.signUpTextButtonOnPressed(context);
+                    },
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        color: kBlue,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
